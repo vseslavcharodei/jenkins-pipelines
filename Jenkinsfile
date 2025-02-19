@@ -31,22 +31,9 @@ pipeline {
             }
         }
 
-        stage('Build DEB') {
-            steps {
-                sh '''
-                echo "Building DEB package for ${APP_NAME} version ${params.APP_VERSION}"
-                mkdir -p ${WORKSPACE_DIR}/${APP_NAME}/DEBIAN
-                echo "Package: ${APP_NAME}" > ${WORKSPACE_DIR}/${APP_NAME}/DEBIAN/control
-                echo "Version: ${params.APP_VERSION}" >> ${WORKSPACE_DIR}/${APP_NAME}/DEBIAN/control
-                echo "Depends: coreutils" >> ${WORKSPACE_DIR}/${APP_NAME}/DEBIAN/control
-                dpkg-deb --build ${WORKSPACE_DIR}/${APP_NAME}
-                '''
-            }
-        }
-
         stage('Archive Packages') {
             steps {
-                archiveArtifacts artifacts: '**/*.rpm, **/*.deb', fingerprint: true
+                archiveArtifacts artifacts: '**/*.rpm', fingerprint: true
             }
         }
     }
