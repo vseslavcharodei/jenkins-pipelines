@@ -1,3 +1,9 @@
+def getAvailableVersions() {
+    def gitRepo = "${env.GIT_REPO}"
+    def branches = sh(script: "git ls-remote --heads ${gitRepo} | awk -F/ '{print \$NF}'", returnStdout: true).trim().split("\n")
+    return branches.join("\n")
+}
+
 pipeline {
     agent any
 
@@ -37,10 +43,4 @@ pipeline {
             }
         }
     }
-}
-
-def getAvailableVersions() {
-    def gitRepo = "${env.GIT_REPO}"
-    def branches = sh(script: "git ls-remote --heads ${gitRepo} | awk -F/ '{print \$NF}'", returnStdout: true).trim().split("\n")
-    return branches.join("\n")
 }
