@@ -5,14 +5,29 @@ pipeline {
         APP_NAME = "myapp"
         GIT_REPO = "${env.GIT_REPO}"
         WORKSPACE_DIR = "${env.WORKSPACE}"
-        AVAILABLE_VERSIONS = sh(script: "git ls-remote --heads ${env.GIT_REPO} | awk -F/ '{print \$NF}'", returnStdout: true).trim().replaceAll('\n', ',')
     }
 
     parameters {
-        choice(name: 'APP_VERSION', choices: "${AVAILABLE_VERSIONS}", description: 'Select the version to build (Git branch name)', defaultValue: 'main')
+        choice(name: 'APP_VERSION', choices: ['main'], description: 'Select the version to build (Git branch name)')
     }
 
     stages {
+        stage('Setup Parameters') {
+            steps {
+                script {
+                    // Fetch available branches
+                    def branches = sh(script: "git ls-remote --heads ${env.GIT_REPO} | awk -F/ '{print \$NF}'", returnStdout: true).trim().replaceAll('\n', ',')
+                    
+                    // Apply dynamically fetched branches as choices
+                    properties([
+                        parameters([
+                            choice(name: 'APP_VERSION', choices: branches, description: 'Select the version to build (Git branch name)')
+                        ])
+                    ])
+                }
+            }
+        }
+
         stage('Checkout') {
             steps {
                 script {
