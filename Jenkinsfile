@@ -1,20 +1,15 @@
-def getAvailableVersions() {
-    def gitRepo = "${env.GIT_REPO}"
-    def branches = sh(script: "git ls-remote --heads ${gitRepo} | awk -F/ '{print \$NF}'", returnStdout: true).trim().split("\n")
-    return branches.join("\n")
-}
-
 pipeline {
     agent any
-
-    parameters {
-        choice(name: 'APP_VERSION', choices: getAvailableVersions(), description: 'Select the version to build (Git branch name)')
-    }
 
     environment {
         APP_NAME = "myapp"
         GIT_REPO = "${env.GIT_REPO}"
         WORKSPACE_DIR = "${env.WORKSPACE}"
+        AVAILABLE_VERSIONS = sh(script: "git ls-remote --heads ${env.GIT_REPO} | awk -F/ '{print \$NF}'", returnStdout: true).trim().replaceAll('\n', ',')
+    }
+
+    parameters {
+        choice(name: 'APP_VERSION', choices: "${AVAILABLE_VERSIONS}", description: 'Select the version to build (Git branch name)', defaultValue: 'main')
     }
 
     stages {
