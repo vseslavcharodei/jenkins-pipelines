@@ -7,18 +7,26 @@ pipeline {
         WORKSPACE_DIR = "${env.WORKSPACE}"
     }
 
-    parameters {
-        choice(name: 'APP_VERSION', choices: ['main'], description: 'Select the version to build (Git branch name)')
-    }
-
     stages {
-        stage('Setup Parameters') {
+        stage('Initialize Parameters') {
             steps {
                 script {
-                    // Fetch available branches
-                    def branches = sh(script: "git ls-remote --heads ${env.GIT_REPO} | awk -F/ '{print \$NF}'", returnStdout: true).trim().replaceAll('\n', ',')
+                    echo "Fetching available branches..."
                     
-                    // Apply dynamically fetched branches as choices
+                    // Fetch available Git branches
+                    def branches = sh(
+                        script: "git ls-remote --heads ${env.GIT_REPO} | awk -F/ '{print \$NF}'",
+                        returnStdout: true
+                    ).trim().split("\n")
+
+                    // Ensure at least one default branch exists
+                    if (branches.isEmpty()) {
+                        branches = ["main"]
+                    }
+
+                    echo "Available Versions: ${branches.join(', ')}"
+
+                    // Update Jenkins job properties to register parameters
                     properties([
                         parameters([
                             choice(name: 'APP_VERSION', choices: branches, description: 'Select the version to build (Git branch name)')
@@ -54,3 +62,4 @@ pipeline {
         }
     }
 }
+
