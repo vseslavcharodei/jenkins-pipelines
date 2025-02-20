@@ -1,6 +1,19 @@
 pipeline {
     agent any
 
+    parameters {
+        gitParameter(
+            name: 'APP_VERSION',
+            type: 'PT_BRANCH',
+            defaultValue: 'main',
+            branch: '',
+            tagFilter: '',
+            sortMode: 'DESCENDING',
+            selectedValue: 'TOP',
+            description: 'Select version to build'
+        )
+    }
+
     environment {
         APP_NAME = "myapp"
         GIT_REPO = "${env.GIT_REPO}"
@@ -8,34 +21,6 @@ pipeline {
     }
 
     stages {
-        stage('Initialize Parameters') {
-            steps {
-                script {
-                    echo "Fetching available branches..."
-                    
-                    // Fetch available Git branches
-                    def branches = sh(
-                        script: "git ls-remote --heads ${env.GIT_REPO} | awk -F/ '{print \$NF}'",
-                        returnStdout: true
-                    ).trim().split("\n")
-
-                    // Ensure at least one default branch exists
-                    if (branches.isEmpty()) {
-                        branches = ["main"]
-                    }
-
-                    echo "Available Versions: ${branches.join(', ')}"
-
-                    // Update Jenkins job properties to register parameters
-                    properties([
-                        parameters([
-                            choice(name: 'APP_VERSION', choices: branches, description: 'Select the version to build (Git branch name)')
-                        ])
-                    ])
-                }
-            }
-        }
-
         stage('Checkout') {
             steps {
                 script {
@@ -62,4 +47,3 @@ pipeline {
         }
     }
 }
-
