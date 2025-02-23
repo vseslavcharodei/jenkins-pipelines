@@ -64,7 +64,7 @@ node {
             tar czvf "\$CHECKOUT_DIR.tar.gz" "\$CHECKOUT_DIR"
             
             # Run rpmbuild with workspace-defined directories
-            rpmbuild -ba "\$CHECKOUT_DIR/rpm\$APP_NAME.spec" --define "_sourcedir \$WORKSPACE"  --define "version \$APP_VERSION"
+            rpmbuild -ba "\$CHECKOUT_DIR/rpm/\$APP_NAME.spec" --define "_sourcedir \$WORKSPACE"  --define "version \$APP_VERSION"
             
             # Move built RPMs to the workspace for Jenkins archiving
             mkdir -p "\$(pwd)/artifacts"
