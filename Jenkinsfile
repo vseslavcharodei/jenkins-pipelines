@@ -76,7 +76,7 @@ node {
                 
                 # Move built RPMs to the workspace for Jenkins archiving
                 mkdir -p "\$(pwd)/artifacts"
-                find "\${JENKINS_HOME}/rpmbuild/RPMS" "\${JENKINS_HOME}/rpmbuild/SRPMS" -name "*.rpm" -exec mv {} "\$(pwd)/artifacts/" \\
+                find "\${JENKINS_HOME}/rpmbuild/RPMS" "\${JENKINS_HOME}/rpmbuild/SRPMS" -name "*.rpm" -exec mv {} "\$(pwd)/artifacts/" \\;
                 """
             }
         }
