@@ -23,7 +23,12 @@ node {
                 choiceType: 'PT_SINGLE_SELECT',
                 description: 'Select an application version to build'
             ],
-            choice(name: 'PACKAGE_TYPE', choices: ['rpm', 'deb', 'all'], description: 'Select package type to build')
+            choice(
+                name: 'PACKAGE_TYPE', 
+                choices: ['rpm', 'deb', 'all'], 
+                description: 'Select package type to build',
+                defaultValue: 'rpm'
+            )
         ])
     ])
 
