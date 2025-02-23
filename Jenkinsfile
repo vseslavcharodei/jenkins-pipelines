@@ -93,10 +93,10 @@ node {
                 echo "Building DEB package for \$APP_NAME version \$APP_VERSION"
                 
                 # Create a Debian package structure
-                mkdir -p "\$CHECKOUT_DIR/deb"
+                mkdir -p "\$CHECKOUT_DIR/debian"
                 
                 # Assuming a Debian control file is already present in the repo
-                cd "\$CHECKOUT_DIR/deb"
+                cd "\$CHECKOUT_DIR/debian"
                 dpkg-buildpackage -us -uc
                 
                 # Move built DEBs to the workspace for Jenkins archiving
