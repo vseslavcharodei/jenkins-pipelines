@@ -112,7 +112,7 @@ node {
                 
                 # Move built DEBs to the workspace for Jenkins archiving
                 mkdir -p "\$WORKSPACE/artifacts"
-                mv "../*.deb" "\$(pwd)/artifacts/"
+                find "\${JENKINS_HOME}" -name "*.deb" -exec mv {} "\$WORKSPACE/artifacts/" \\;
                 """
             }
         }
